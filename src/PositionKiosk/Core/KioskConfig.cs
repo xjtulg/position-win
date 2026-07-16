@@ -12,6 +12,7 @@ public sealed class KioskConfig
     public bool TopMost { get; set; } = true;
     public bool ShowInTaskbar { get; set; } = false;
     public string UserDataFolder { get; set; } = "WebView2Data";
+    public bool AutoFitToWindow { get; set; } = true;
 
     public bool IsUrlValid =>
         Uri.TryCreate(Url, UriKind.Absolute, out var u)

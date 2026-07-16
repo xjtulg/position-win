@@ -23,7 +23,8 @@ public class KioskConfigTests
             ("RetryIntervalSeconds", "30"),
             ("TopMost", "false"),
             ("ShowInTaskbar", "true"),
-            ("UserDataFolder", "Data")
+            ("UserDataFolder", "Data"),
+            ("AutoFitToWindow", "false")
         ));
 
         Assert.Equal("https://example.com/", cfg.Url);
@@ -34,6 +35,7 @@ public class KioskConfigTests
         Assert.False(cfg.TopMost);
         Assert.True(cfg.ShowInTaskbar);
         Assert.Equal("Data", cfg.UserDataFolder);
+        Assert.False(cfg.AutoFitToWindow);
     }
 
     [Fact]
@@ -61,6 +63,7 @@ public class KioskConfigTests
         Assert.Equal(10, cfg.RetryIntervalSeconds);
         Assert.True(cfg.TopMost);
         Assert.False(cfg.ShowInTaskbar);
+        Assert.True(cfg.AutoFitToWindow);
     }
 
     [Theory]

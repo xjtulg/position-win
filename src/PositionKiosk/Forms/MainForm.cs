@@ -57,6 +57,7 @@ public sealed class MainForm : Form
         Load += OnLoad;
         FormClosing += OnFormClosing;   // F4
         Deactivate += OnDeactivate;     // F5
+        Resize += OnResize;
     }
 
     protected override void OnHandleCreated(EventArgs e)
@@ -136,6 +137,7 @@ public sealed class MainForm : Form
             _retry.ReportSuccess();
             _overlay.Visible = false;
             _logger.Log("[navigation] success");
+            _ = ApplyAutoFitAsync();
         }
         else
         {
@@ -199,6 +201,11 @@ public sealed class MainForm : Form
         // F5：失焦后抢回前台（但在显示管理对话框时不抢）
         if (TopMost && !_showingAdminDialog)
             BeginInvoke(() => Activate());
+    }
+
+    private void OnResize(object? sender, EventArgs e)
+    {
+        _ = ApplyAutoFitAsync();
     }
 
     // ---- 管理员逃生通道 ----
@@ -280,6 +287,21 @@ public sealed class MainForm : Form
         RegisterAdminHotKey();
         _logger.Log($"[reload] url={_config.Url}");
         NavigateOrShowConfigError();
+    }
+
+    private async Task ApplyAutoFitAsync()
+    {
+        if (!_config.AutoFitToWindow || IsDisposed || _webView.CoreWebView2 == null)
+            return;
+
+        try
+        {
+            await _webView.CoreWebView2.ExecuteScriptAsync(WebViewAutoFitScript.Create());
+        }
+        catch (Exception ex)
+        {
+            _logger.Log($"[autofit] {ex}");
+        }
     }
 
     private void RegisterAdminHotKey()
