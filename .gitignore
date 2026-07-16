@@ -1,0 +1,23 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.lock.json
+
+# 构建/发布产物
+publish/
+[Pp]ublish/
+artifacts/
+
+# WebView2 运行时数据与本地缓存
+WebView2Data/
+*.tmp
+
+# IDE
+.idea/
+*.swp
+
+# 日志
+*.log
