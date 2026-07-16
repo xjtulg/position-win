@@ -102,6 +102,7 @@ echo     1) Copy publish dir to target machine
 echo     2) Edit appsettings.json to set Url
 echo     3) Run PositionKiosk.exe --hash-password ^<password^>
 echo     4) Run install-shortcut.ps1 for startup shortcut
+echo     5) Run uninstall-shortcut.ps1 to remove startup shortcut
 echo ============================================================
 echo.
 pause
