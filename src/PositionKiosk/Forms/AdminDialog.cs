@@ -37,7 +37,7 @@ public sealed class AdminDialog : Form
         StartPosition = FormStartPosition.CenterParent;
         MaximizeBox = false;
         MinimizeBox = false;
-        ClientSize = new Size(360, 280);
+        ClientSize = new Size(360, 300);
 
         var lbl = new Label
         {
@@ -52,23 +52,19 @@ public sealed class AdminDialog : Form
             Size = new Size(320, 25),
             PasswordChar = '*',
         };
-        _passwordBox.KeyDown += (_, e) =>
-        {
-            if (e.KeyCode == Keys.Enter) { VerifyPassword(); e.SuppressKeyPress = true; }
-        };
 
         _verifyButton = new Button { Text = "验证", Location = new Point(250, 85), Size = new Size(90, 30) };
         _verifyButton.Click += (_, _) => VerifyPassword();
 
-        _exitButton = MakeActionButton("退出程序", 20, AdminAction.Exit);
-        _reloadButton = MakeActionButton("重载页面", 110, AdminAction.Reload);
-        _devToolsButton = MakeActionButton("打开 DevTools", 200, AdminAction.DevTools);
-        _unlockButton = MakeActionButton("解除锁定", 20, AdminAction.Unlock);
+        _exitButton = MakeActionButton("退出程序", 20, 120, AdminAction.Exit);
+        _reloadButton = MakeActionButton("重载页面", 190, 120, AdminAction.Reload);
+        _devToolsButton = MakeActionButton("打开 DevTools", 20, 165, AdminAction.DevTools);
+        _unlockButton = MakeActionButton("解除锁定", 190, 165, AdminAction.Unlock);
 
         var unlockLabel = new Label
         {
             Text = "（解除锁定：临时变为可移动的普通窗口，便于维护）",
-            Location = new Point(20, 195),
+            Location = new Point(20, 210),
             Size = new Size(320, 60),
             ForeColor = Color.Gray,
         };
@@ -83,13 +79,13 @@ public sealed class AdminDialog : Form
         AcceptButton = _verifyButton;
     }
 
-    private Button MakeActionButton(string text, int x, AdminAction action)
+    private Button MakeActionButton(string text, int x, int y, AdminAction action)
     {
         var btn = new Button
         {
             Text = text,
-            Location = new Point(x, 150),
-            Size = new Size(110, 35),
+            Location = new Point(x, y),
+            Size = new Size(150, 35),
             Enabled = false,
         };
         btn.Click += (_, _) =>
