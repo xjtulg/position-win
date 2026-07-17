@@ -7,8 +7,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <NoWarn>$(NoWarn);MSB3277</NoWarn>
-    <RootNamespace>PositionKiosk</RootNamespace>
-    <AssemblyName>PositionKiosk</AssemblyName>
+    <RootNamespace>KioskWin</RootNamespace>
+    <AssemblyName>KioskWin</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

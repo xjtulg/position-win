@@ -2,7 +2,7 @@
 setlocal
 
 REM ============================================================
-REM  Position Kiosk -- build and package script (build.bat)
+REM  KioskWin -- build and package script (build.bat)
 REM
 REM  Usage:
 REM    Double-click, or run in cmd:
@@ -11,21 +11,21 @@ REM      build.bat notest     skip tests, publish and zip only
 REM
 REM  Output:
 REM    .\publish\              self-contained deploy directory
-REM    .\PositionKiosk-win-x64.zip  packaged archive
+REM    .\KioskWin-win-x64.zip  packaged archive
 REM ============================================================
 
 set "ROOT=%~dp0"
-set "SLN=%ROOT%PositionKiosk.sln"
-set "PROJ=%ROOT%src\PositionKiosk\PositionKiosk.csproj"
+set "SLN=%ROOT%KioskWin.sln"
+set "PROJ=%ROOT%src\KioskWin\KioskWin.csproj"
 set "OUT=%ROOT%publish"
-set "ZIP=%ROOT%PositionKiosk-win-x64.zip"
+set "ZIP=%ROOT%KioskWin-win-x64.zip"
 set "CONFIG=Release"
 set "RID=win-x64"
 
 if /i "%~1"=="notest" (set "RUNTESTS=0") else (set "RUNTESTS=1")
 
 echo ============================================================
-echo   Position Kiosk Build / Package
+echo   KioskWin Build / Package
 echo   Solution: %SLN%
 echo   Output  : %OUT%
 echo   Archive : %ZIP%
@@ -100,7 +100,7 @@ echo.
 echo   Deploy steps:
 echo     1) Copy publish dir to target machine
 echo     2) Edit appsettings.json to set Url
-echo     3) Run PositionKiosk.exe --hash-password ^<password^>
+echo     3) Run KioskWin.exe --hash-password ^<password^>
 echo     4) Run install-shortcut.ps1 for startup shortcut
 echo     5) Run uninstall-shortcut.ps1 to remove startup shortcut
 echo ============================================================

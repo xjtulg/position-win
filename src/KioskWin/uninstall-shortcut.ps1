@@ -1,9 +1,9 @@
-# 删除当前用户的"启动"文件夹中的 PositionKiosk 开机自启快捷方式
+# 删除当前用户的"启动"文件夹中的 KioskWin 开机自启快捷方式
 # 用法：在发布产物目录下运行 powershell -ExecutionPolicy Bypass -File .\uninstall-shortcut.ps1
 $ErrorActionPreference = 'Stop'
 
 $startup = [Environment]::GetFolderPath('Startup')
-$shortcutPath = Join-Path $startup 'PositionKiosk.lnk'
+$shortcutPath = Join-Path $startup 'KioskWin.lnk'
 
 if (Test-Path $shortcutPath) {
     Remove-Item -LiteralPath $shortcutPath -Force

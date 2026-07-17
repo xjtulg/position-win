@@ -1,4 +1,4 @@
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public interface IRetryScheduler
 {

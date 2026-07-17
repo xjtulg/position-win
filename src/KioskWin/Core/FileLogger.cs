@@ -1,4 +1,4 @@
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class FileLogger
 {
@@ -8,7 +8,7 @@ public sealed class FileLogger
     public FileLogger()
         : this(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "PositionKiosk", "logs"))
+            "KioskWin", "logs"))
     {
     }
 

@@ -1,10 +1,10 @@
-# Position Kiosk 实现计划
+# KioskWin 实现计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 构建一个 WinForms + WebView2 的全屏锁定程序，加载可配置远程网页，防止普通用户关闭或切到后台。
 
-**Architecture:** 单 WinExe 项目（`PositionKiosk`，net8.0-windows）+ xUnit 测试项目。纯逻辑放 `Core/`（配置、密码哈希、重试状态机、日志、组合键解析），TDD 覆盖；Win32/WebView2/窗口行为放 `Forms/`，用手动 QA 清单覆盖。`Program.cs` 负责入口、单实例、异常兜底、`--hash-password` CLI。自包含单文件发布，拷贝即用。
+**Architecture:** 单 WinExe 项目（`KioskWin`，net8.0-windows）+ xUnit 测试项目。纯逻辑放 `Core/`（配置、密码哈希、重试状态机、日志、组合键解析），TDD 覆盖；Win32/WebView2/窗口行为放 `Forms/`，用手动 QA 清单覆盖。`Program.cs` 负责入口、单实例、异常兜底、`--hash-password` CLI。自包含单文件发布，拷贝即用。
 
 **Tech Stack:** C# / .NET 8 (net8.0-windows), WinForms, Microsoft.Web.WebView2 (Evergreen), Microsoft.Extensions.Configuration, xUnit.
 
@@ -12,11 +12,11 @@
 
 - **目标框架**：`net8.0-windows`。构建/发布/测试均在 Windows 上运行（WSL 无 dotnet；源码在 `/mnt/d/code/position-win` 即 Windows `D:` 盘，编辑在 WSL，编译在 Windows）。
 - **NuGet 版本**：`Microsoft.Web.WebView2` 1.0.2903.40；`Microsoft.Extensions.Configuration.Json` 8.0.1；`Microsoft.Extensions.Configuration.Binder` 8.0.2；测试用 `Microsoft.NET.Test.Sdk` 17.11.1、`xunit` 2.9.2、`xunit.runner.visualstudio` 2.8.2、`Microsoft.Extensions.Configuration.Memory` 8.0.1。如某个版本恢复失败，改用同主版本的最新修订号。
-- **命名空间**：主项目 `PositionKiosk`、`PositionKiosk.Core`、`PositionKiosk.Forms`；测试 `PositionKiosk.Tests`。
+- **命名空间**：主项目 `KioskWin`、`KioskWin.Core`、`KioskWin.Forms`；测试 `KioskWin.Tests`。
 - **UI 全部代码构造**：不使用 `.Designer.cs`（计划中所有控件在构造函数里 new 出来），便于在无 WinForms 设计器的环境下完整呈现代码。
 - **配置文件**：`appsettings.json` 与 exe 同目录，`CopyToOutputDirectory=PreserveNewest`。**禁止存明文密码**——存 `AdminPasswordHash`(SHA-256 hex) + 随机 `PasswordSalt`。
-- **单实例互斥锁名**：`Global\PositionKiosk_SingleInstance`。
-- **日志目录**：`%LocalAppData%\PositionKiosk\logs\`，按天 `yyyy-MM-dd.log`。
+- **单实例互斥锁名**：`Global\KioskWin_SingleInstance`。
+- **日志目录**：`%LocalAppData%\KioskWin\logs\`，按天 `yyyy-MM-dd.log`。
 - **每完成一个任务即 commit**（frequent commits）。仓库已初始化于项目根目录。
 - **YAGNI**：只实现规格第 2 节的需求；中等/高强度锁定（规格第 12 节）不做。
 
@@ -26,51 +26,51 @@
 
 | 文件 | 职责 | 创建任务 |
 |---|---|---|
-| `PositionKiosk.sln` | 解决方案 | Task 1 |
-| `src/PositionKiosk/PositionKiosk.csproj` | WinForms 项目 + 依赖 | Task 1 |
-| `src/PositionKiosk/Program.cs` | 入口（占位→最终） | Task 1 / Task 10 |
-| `src/PositionKiosk/appsettings.json` | 配置 | Task 1 |
-| `src/PositionKiosk/Core/FileLogger.cs` | 按天文件日志 | Task 2 |
-| `src/PositionKiosk/Core/PasswordHasher.cs` | SHA-256(salt+pwd) 哈希/校验 | Task 3 |
-| `src/PositionKiosk/Core/KeyCombinationParser.cs` | "Ctrl+Shift+Alt+Q"→Keys | Task 4 |
-| `src/PositionKiosk/Core/KioskConfig.cs` | 配置 POCO + 加载/校验/默认 | Task 5 |
-| `src/PositionKiosk/Core/RetryController.cs` | 重试状态机 + IRetryScheduler | Task 6 |
-| `src/PositionKiosk/Core/FormsRetryScheduler.cs` | 生产用 Forms.Timer 调度器 | Task 6 |
-| `src/PositionKiosk/Forms/RetryOverlay.cs` | 复用全屏遮罩控件 | Task 7 |
-| `src/PositionKiosk/Forms/AdminDialog.cs` | 密码框 + 工具按钮对话框 | Task 8 |
-| `src/PositionKiosk/Forms/MainForm.cs` | 无边框全屏 + WebView2 + 锁定 + 重试 + 管理员入口 | Task 9 |
-| `src/PositionKiosk/install-shortcut.ps1` | 开机自启快捷方式 | Task 11 |
-| `tests/PositionKiosk.Tests/PositionKiosk.Tests.csproj` | 测试项目 | Task 1 |
-| `tests/PositionKiosk.Tests/*.cs` | Core 单元测试 | Task 2-6 |
+| `KioskWin.sln` | 解决方案 | Task 1 |
+| `src/KioskWin/KioskWin.csproj` | WinForms 项目 + 依赖 | Task 1 |
+| `src/KioskWin/Program.cs` | 入口（占位→最终） | Task 1 / Task 10 |
+| `src/KioskWin/appsettings.json` | 配置 | Task 1 |
+| `src/KioskWin/Core/FileLogger.cs` | 按天文件日志 | Task 2 |
+| `src/KioskWin/Core/PasswordHasher.cs` | SHA-256(salt+pwd) 哈希/校验 | Task 3 |
+| `src/KioskWin/Core/KeyCombinationParser.cs` | "Ctrl+Shift+Alt+Q"→Keys | Task 4 |
+| `src/KioskWin/Core/KioskConfig.cs` | 配置 POCO + 加载/校验/默认 | Task 5 |
+| `src/KioskWin/Core/RetryController.cs` | 重试状态机 + IRetryScheduler | Task 6 |
+| `src/KioskWin/Core/FormsRetryScheduler.cs` | 生产用 Forms.Timer 调度器 | Task 6 |
+| `src/KioskWin/Forms/RetryOverlay.cs` | 复用全屏遮罩控件 | Task 7 |
+| `src/KioskWin/Forms/AdminDialog.cs` | 密码框 + 工具按钮对话框 | Task 8 |
+| `src/KioskWin/Forms/MainForm.cs` | 无边框全屏 + WebView2 + 锁定 + 重试 + 管理员入口 | Task 9 |
+| `src/KioskWin/install-shortcut.ps1` | 开机自启快捷方式 | Task 11 |
+| `tests/KioskWin.Tests/KioskWin.Tests.csproj` | 测试项目 | Task 1 |
+| `tests/KioskWin.Tests/*.cs` | Core 单元测试 | Task 2-6 |
 
 ---
 
 ## Task 1: 项目脚手架与构建验证
 
 **Files:**
-- Create: `PositionKiosk.sln`
-- Create: `src/PositionKiosk/PositionKiosk.csproj`
-- Create: `src/PositionKiosk/Program.cs`（占位）
-- Create: `src/PositionKiosk/appsettings.json`
-- Create: `tests/PositionKiosk.Tests/PositionKiosk.Tests.csproj`
-- Create: `tests/PositionKiosk.Tests/SmokeTests.cs`
+- Create: `KioskWin.sln`
+- Create: `src/KioskWin/KioskWin.csproj`
+- Create: `src/KioskWin/Program.cs`（占位）
+- Create: `src/KioskWin/appsettings.json`
+- Create: `tests/KioskWin.Tests/KioskWin.Tests.csproj`
+- Create: `tests/KioskWin.Tests/SmokeTests.cs`
 
 **Interfaces:**
-- Produces: 可构建的解决方案；`PositionKiosk` 命名空间；后续任务在此基础上加文件。
+- Produces: 可构建的解决方案；`KioskWin` 命名空间；后续任务在此基础上加文件。
 
 - [ ] **Step 1: 创建解决方案**
 
 在项目根目录（`D:\code\position-win`，WSL 路径 `/mnt/d/code/position-win`）运行：
 
 ```bash
-dotnet new sln -n PositionKiosk
+dotnet new sln -n KioskWin
 ```
 
-预期：生成 `PositionKiosk.sln`。
+预期：生成 `KioskWin.sln`。
 
 - [ ] **Step 2: 写主项目 csproj**
 
-创建 `src/PositionKiosk/PositionKiosk.csproj`：
+创建 `src/KioskWin/KioskWin.csproj`：
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -81,8 +81,8 @@ dotnet new sln -n PositionKiosk
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>PositionKiosk</RootNamespace>
-    <AssemblyName>PositionKiosk</AssemblyName>
+    <RootNamespace>KioskWin</RootNamespace>
+    <AssemblyName>KioskWin</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -102,10 +102,10 @@ dotnet new sln -n PositionKiosk
 
 - [ ] **Step 3: 写占位 Program.cs**
 
-创建 `src/PositionKiosk/Program.cs`（Task 10 会替换为最终版本）：
+创建 `src/KioskWin/Program.cs`（Task 10 会替换为最终版本）：
 
 ```csharp
-namespace PositionKiosk;
+namespace KioskWin;
 
 internal static class Program
 {
@@ -120,7 +120,7 @@ internal static class Program
 
 - [ ] **Step 4: 写 appsettings.json**
 
-创建 `src/PositionKiosk/appsettings.json`（密码哈希先留空，部署时用 `--hash-password` 填充）：
+创建 `src/KioskWin/appsettings.json`（密码哈希先留空，部署时用 `--hash-password` 填充）：
 
 ```json
 {
@@ -137,7 +137,7 @@ internal static class Program
 
 - [ ] **Step 5: 写测试项目 csproj**
 
-创建 `tests/PositionKiosk.Tests/PositionKiosk.Tests.csproj`：
+创建 `tests/KioskWin.Tests/KioskWin.Tests.csproj`：
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -158,7 +158,7 @@ internal static class Program
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PositionKiosk\PositionKiosk.csproj" />
+    <ProjectReference Include="..\..\src\KioskWin\KioskWin.csproj" />
   </ItemGroup>
 
 </Project>
@@ -166,12 +166,12 @@ internal static class Program
 
 - [ ] **Step 6: 写一个冒烟测试**
 
-创建 `tests/PositionKiosk.Tests/SmokeTests.cs`：
+创建 `tests/KioskWin.Tests/SmokeTests.cs`：
 
 ```csharp
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class SmokeTests
 {
@@ -187,15 +187,15 @@ public class SmokeTests
 - [ ] **Step 7: 把两个项目加入解决方案**
 
 ```bash
-dotnet sln add src/PositionKiosk/PositionKiosk.csproj
-dotnet sln add tests/PositionKiosk.Tests/PositionKiosk.Tests.csproj
+dotnet sln add src/KioskWin/KioskWin.csproj
+dotnet sln add tests/KioskWin.Tests/KioskWin.Tests.csproj
 ```
 
 - [ ] **Step 8: 还原 + 构建 + 测试**
 
 ```bash
 dotnet restore
-dotnet build PositionKiosk.sln -c Debug
+dotnet build KioskWin.sln -c Debug
 dotnet test
 ```
 
@@ -205,7 +205,7 @@ dotnet test
 
 ```bash
 git add -A
-git commit -m "chore: scaffold PositionKiosk solution and test project"
+git commit -m "chore: scaffold KioskWin solution and test project"
 ```
 
 ---
@@ -213,31 +213,31 @@ git commit -m "chore: scaffold PositionKiosk solution and test project"
 ## Task 2: FileLogger（Core，TDD）
 
 **Files:**
-- Create: `src/PositionKiosk/Core/FileLogger.cs`
-- Create: `tests/PositionKiosk.Tests/FileLoggerTests.cs`
+- Create: `src/KioskWin/Core/FileLogger.cs`
+- Create: `tests/KioskWin.Tests/FileLoggerTests.cs`
 
 **Interfaces:**
-- Produces: `PositionKiosk.Core.FileLogger`
-  - `FileLogger()` — 默认写到 `%LocalAppData%\PositionKiosk\logs\`
+- Produces: `KioskWin.Core.FileLogger`
+  - `FileLogger()` — 默认写到 `%LocalAppData%\KioskWin\logs\`
   - `FileLogger(string logDirectory)` — 用于测试注入目录
   - `void Log(string message)` — 追加一行（带时间戳）到 `yyyy-MM-dd.log`
 
 - [ ] **Step 1: 写失败测试**
 
-创建 `tests/PositionKiosk.Tests/FileLoggerTests.cs`：
+创建 `tests/KioskWin.Tests/FileLoggerTests.cs`：
 
 ```csharp
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class FileLoggerTests
 {
     [Fact]
     public void Log_creates_dated_file_and_writes_message()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "PositionKioskTest_" + Guid.NewGuid().ToString("N"));
+        var dir = Path.Combine(Path.GetTempPath(), "KioskWinTest_" + Guid.NewGuid().ToString("N"));
         var logger = new FileLogger(dir);
 
         logger.Log("hello world");
@@ -251,7 +251,7 @@ public class FileLoggerTests
     [Fact]
     public void Log_appends_multiple_lines_to_same_file()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "PositionKioskTest_" + Guid.NewGuid().ToString("N"));
+        var dir = Path.Combine(Path.GetTempPath(), "KioskWinTest_" + Guid.NewGuid().ToString("N"));
         var logger = new FileLogger(dir);
 
         logger.Log("line one");
@@ -271,7 +271,7 @@ public class FileLoggerTests
 Task 1 的冒烟测试使命已完成，删除它：
 
 ```bash
-rm tests/PositionKiosk.Tests/SmokeTests.cs
+rm tests/KioskWin.Tests/SmokeTests.cs
 dotnet test
 ```
 
@@ -279,10 +279,10 @@ dotnet test
 
 - [ ] **Step 3: 实现 FileLogger**
 
-创建 `src/PositionKiosk/Core/FileLogger.cs`：
+创建 `src/KioskWin/Core/FileLogger.cs`：
 
 ```csharp
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class FileLogger
 {
@@ -292,7 +292,7 @@ public sealed class FileLogger
     public FileLogger()
         : this(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "PositionKiosk", "logs"))
+            "KioskWin", "logs"))
     {
     }
 
@@ -334,11 +334,11 @@ git commit -m "feat(core): add FileLogger with daily file rotation"
 ## Task 3: PasswordHasher（Core，TDD）
 
 **Files:**
-- Create: `src/PositionKiosk/Core/PasswordHasher.cs`
-- Create: `tests/PositionKiosk.Tests/PasswordHasherTests.cs`
+- Create: `src/KioskWin/Core/PasswordHasher.cs`
+- Create: `tests/KioskWin.Tests/PasswordHasherTests.cs`
 
 **Interfaces:**
-- Produces: `PositionKiosk.Core.PasswordHasher`
+- Produces: `KioskWin.Core.PasswordHasher`
   - `record PasswordHashResult(string Hash, string Salt)`
   - `static PasswordHashResult Generate(string password)` — 随机 16 字节 salt，返回 hex
   - `static bool Verify(string password, string expectedHashHex, string saltHex)` — 常数时间比较
@@ -346,13 +346,13 @@ git commit -m "feat(core): add FileLogger with daily file rotation"
 
 - [ ] **Step 1: 写失败测试**
 
-创建 `tests/PositionKiosk.Tests/PasswordHasherTests.cs`：
+创建 `tests/KioskWin.Tests/PasswordHasherTests.cs`：
 
 ```csharp
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class PasswordHasherTests
 {
@@ -404,13 +404,13 @@ dotnet test --filter "FullyQualifiedName~PasswordHasherTests"
 
 - [ ] **Step 3: 实现 PasswordHasher**
 
-创建 `src/PositionKiosk/Core/PasswordHasher.cs`：
+创建 `src/KioskWin/Core/PasswordHasher.cs`：
 
 ```csharp
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed record PasswordHashResult(string Hash, string Salt);
 
@@ -476,24 +476,24 @@ git commit -m "feat(core): add PasswordHasher (SHA-256 + salt, constant-time com
 ## Task 4: KeyCombinationParser（Core，TDD）
 
 **Files:**
-- Create: `src/PositionKiosk/Core/KeyCombinationParser.cs`
-- Create: `tests/PositionKiosk.Tests/KeyCombinationParserTests.cs`
+- Create: `src/KioskWin/Core/KeyCombinationParser.cs`
+- Create: `tests/KioskWin.Tests/KeyCombinationParserTests.cs`
 
 **Interfaces:**
-- Produces: `PositionKiosk.Core.KeyCombinationParser`
+- Produces: `KioskWin.Core.KeyCombinationParser`
   - `static System.Windows.Forms.Keys Parse(string text)` — 解析 `"Ctrl+Shift+Alt+Q"` 为按位或的 `Keys`
 - 消费：`System.Windows.Forms.Keys`（主项目已是 WinForms）。
 
 - [ ] **Step 1: 写失败测试**
 
-创建 `tests/PositionKiosk.Tests/KeyCombinationParserTests.cs`：
+创建 `tests/KioskWin.Tests/KeyCombinationParserTests.cs`：
 
 ```csharp
 using System.Windows.Forms;
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class KeyCombinationParserTests
 {
@@ -543,12 +543,12 @@ dotnet test --filter "FullyQualifiedName~KeyCombinationParserTests"
 
 - [ ] **Step 3: 实现 KeyCombinationParser**
 
-创建 `src/PositionKiosk/Core/KeyCombinationParser.cs`：
+创建 `src/KioskWin/Core/KeyCombinationParser.cs`：
 
 ```csharp
 using System.Windows.Forms;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public static class KeyCombinationParser
 {
@@ -598,12 +598,12 @@ git commit -m "feat(core): add KeyCombinationParser (string -> WinForms Keys)"
 ## Task 5: KioskConfig（Core，TDD）
 
 **Files:**
-- Create: `src/PositionKiosk/Core/KioskConfig.cs`
-- Create: `tests/PositionKiosk.Tests/KioskConfigTests.cs`
+- Create: `src/KioskWin/Core/KioskConfig.cs`
+- Create: `tests/KioskWin.Tests/KioskConfigTests.cs`
 
 **Interfaces:**
 - Consumes: `Microsoft.Extensions.Configuration.IConfiguration`
-- Produces: `PositionKiosk.Core.KioskConfig`
+- Produces: `KioskWin.Core.KioskConfig`
   - 可写属性：`Url`、`AdminKeyCombination`、`AdminPasswordHash`、`PasswordSalt`、`RetryIntervalSeconds`、`TopMost`、`ShowInTaskbar`、`UserDataFolder`
   - 计算属性：`bool IsUrlValid`、`TimeSpan RetryInterval`
   - `static KioskConfig Load(IConfiguration configuration)` — 绑定 + 默认值兜底（可测）
@@ -611,14 +611,14 @@ git commit -m "feat(core): add KeyCombinationParser (string -> WinForms Keys)"
 
 - [ ] **Step 1: 写失败测试**
 
-创建 `tests/PositionKiosk.Tests/KioskConfigTests.cs`：
+创建 `tests/KioskWin.Tests/KioskConfigTests.cs`：
 
 ```csharp
 using Microsoft.Extensions.Configuration;
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class KioskConfigTests
 {
@@ -704,12 +704,12 @@ dotnet test --filter "FullyQualifiedName~KioskConfigTests"
 
 - [ ] **Step 3: 实现 KioskConfig**
 
-创建 `src/PositionKiosk/Core/KioskConfig.cs`：
+创建 `src/KioskWin/Core/KioskConfig.cs`：
 
 ```csharp
 using Microsoft.Extensions.Configuration;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class KioskConfig
 {
@@ -774,9 +774,9 @@ git commit -m "feat(core): add KioskConfig with validation and safe defaults"
 ## Task 6: RetryController + IRetryScheduler（Core，TDD）
 
 **Files:**
-- Create: `src/PositionKiosk/Core/RetryController.cs`
-- Create: `src/PositionKiosk/Core/FormsRetryScheduler.cs`
-- Create: `tests/PositionKiosk.Tests/RetryControllerTests.cs`
+- Create: `src/KioskWin/Core/RetryController.cs`
+- Create: `src/KioskWin/Core/FormsRetryScheduler.cs`
+- Create: `tests/KioskWin.Tests/RetryControllerTests.cs`
 
 **Interfaces:**
 - Produces:
@@ -790,13 +790,13 @@ git commit -m "feat(core): add KioskConfig with validation and safe defaults"
 
 - [ ] **Step 1: 写失败测试**
 
-创建 `tests/PositionKiosk.Tests/RetryControllerTests.cs`：
+创建 `tests/KioskWin.Tests/RetryControllerTests.cs`：
 
 ```csharp
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class RetryControllerTests
 {
@@ -889,10 +889,10 @@ dotnet test --filter "FullyQualifiedName~RetryControllerTests"
 
 - [ ] **Step 3: 实现 RetryController + IRetryScheduler**
 
-创建 `src/PositionKiosk/Core/RetryController.cs`：
+创建 `src/KioskWin/Core/RetryController.cs`：
 
 ```csharp
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public interface IRetryScheduler
 {
@@ -938,12 +938,12 @@ public sealed class RetryController
 
 - [ ] **Step 4: 实现生产调度器 FormsRetryScheduler**
 
-创建 `src/PositionKiosk/Core/FormsRetryScheduler.cs`：
+创建 `src/KioskWin/Core/FormsRetryScheduler.cs`：
 
 ```csharp
 using System.Windows.Forms;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class FormsRetryScheduler : IRetryScheduler
 {
@@ -992,10 +992,10 @@ git commit -m "feat(core): add RetryController state machine and FormsRetrySched
 ## Task 7: RetryOverlay（Forms，UI）
 
 **Files:**
-- Create: `src/PositionKiosk/Forms/RetryOverlay.cs`
+- Create: `src/KioskWin/Forms/RetryOverlay.cs`
 
 **Interfaces:**
-- Produces: `PositionKiosk.Forms.RetryOverlay`（继承 `UserControl`，`Dock = Fill`）
+- Produces: `KioskWin.Forms.RetryOverlay`（继承 `UserControl`，`Dock = Fill`）
   - `void ShowRetry()` / `void ShowConfigError()` / `void ShowRuntimeMissing()` / `void ShowGenericError(string? detail = null)`
 - 消费：`System.Windows.Forms`、`System.Drawing`。
 
@@ -1003,13 +1003,13 @@ git commit -m "feat(core): add RetryController state machine and FormsRetrySched
 
 - [ ] **Step 1: 实现 RetryOverlay**
 
-创建 `src/PositionKiosk/Forms/RetryOverlay.cs`：
+创建 `src/KioskWin/Forms/RetryOverlay.cs`：
 
 ```csharp
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public sealed class RetryOverlay : UserControl
 {
@@ -1052,7 +1052,7 @@ public sealed class RetryOverlay : UserControl
 - [ ] **Step 2: 构建确认编译通过**
 
 ```bash
-dotnet build src/PositionKiosk/PositionKiosk.csproj
+dotnet build src/KioskWin/KioskWin.csproj
 ```
 
 预期：0 错误。
@@ -1069,25 +1069,25 @@ git commit -m "feat(forms): add reusable RetryOverlay control"
 ## Task 8: AdminDialog（Forms，UI）
 
 **Files:**
-- Create: `src/PositionKiosk/Forms/AdminDialog.cs`
+- Create: `src/KioskWin/Forms/AdminDialog.cs`
 
 **Interfaces:**
-- Consumes: `PositionKiosk.Core.KioskConfig`、`PositionKiosk.Core.PasswordHasher`
+- Consumes: `KioskWin.Core.KioskConfig`、`KioskWin.Core.PasswordHasher`
 - Produces:
-  - `enum PositionKiosk.Forms.AdminAction { None, Exit, Reload, DevTools, Unlock }`
+  - `enum KioskWin.Forms.AdminAction { None, Exit, Reload, DevTools, Unlock }`
   - `sealed class AdminDialog : Form`：ctor `(KioskConfig config, Action<string> logFailure)`；属性 `AdminAction Result`
 - 行为：密码框输入 → 点"验证"按钮 → `PasswordHasher.Verify` 比对 `config.AdminPasswordHash`/`config.PasswordSalt`；通过则启用 4 个工具按钮（退出/重载/DevTools/解除锁定）；失败则提示 + 清空 + 写日志。
 
 - [ ] **Step 1: 实现 AdminDialog**
 
-创建 `src/PositionKiosk/Forms/AdminDialog.cs`：
+创建 `src/KioskWin/Forms/AdminDialog.cs`：
 
 ```csharp
 using System.Drawing;
 using System.Windows.Forms;
-using PositionKiosk.Core;
+using KioskWin.Core;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public enum AdminAction
 {
@@ -1117,7 +1117,7 @@ public sealed class AdminDialog : Form
         _config = config;
         _logFailure = logFailure;
 
-        Text = "Position Kiosk 管理员";
+        Text = "KioskWin 管理员";
         FormBorderStyle = FormBorderStyle.FixedDialog;
         StartPosition = FormStartPosition.CenterParent;
         MaximizeBox = false;
@@ -1201,13 +1201,13 @@ public sealed class AdminDialog : Form
             SetActionButtonsEnabled(true);
             _passwordBox.Enabled = false;
             _verifyButton.Enabled = false;
-            _ = MessageBox.Show(this, "验证通过，请选择操作。", "Position Kiosk",
+            _ = MessageBox.Show(this, "验证通过，请选择操作。", "KioskWin",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         else
         {
             _logFailure("admin auth failed");
-            MessageBox.Show(this, "密码错误", "Position Kiosk",
+            MessageBox.Show(this, "密码错误", "KioskWin",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             _passwordBox.Clear();
         }
@@ -1218,7 +1218,7 @@ public sealed class AdminDialog : Form
 - [ ] **Step 2: 构建确认编译通过**
 
 ```bash
-dotnet build src/PositionKiosk/PositionKiosk.csproj
+dotnet build src/KioskWin/KioskWin.csproj
 ```
 
 预期：0 错误。
@@ -1235,27 +1235,27 @@ git commit -m "feat(forms): add AdminDialog with password gate and tool actions"
 ## Task 9: MainForm（Forms，集成）
 
 **Files:**
-- Create: `src/PositionKiosk/Forms/MainForm.cs`
+- Create: `src/KioskWin/Forms/MainForm.cs`
 
 **Interfaces:**
 - Consumes: `KioskConfig`、`FileLogger`、`KeyCombinationParser`、`RetryController`、`FormsRetryScheduler`、`RetryOverlay`、`AdminDialog`/`AdminAction`、`Microsoft.Web.WebView2.WinForms.WebView2`、`CoreWebView2Environment`。
-- Produces: `PositionKiosk.Forms.MainForm`，ctor `(KioskConfig config, FileLogger logger)`。`Program.cs`（Task 10）会 `Application.Run(new MainForm(config, logger))`。
+- Produces: `KioskWin.Forms.MainForm`，ctor `(KioskConfig config, FileLogger logger)`。`Program.cs`（Task 10）会 `Application.Run(new MainForm(config, logger))`。
 
 > 覆盖需求 F1、F3、F4、F5、F7、F8 的窗口侧。本任务无单元测试（Win32/WebView2 行为），用手动 QA 清单（Task 11）覆盖。
 
 - [ ] **Step 1: 实现 MainForm**
 
-创建 `src/PositionKiosk/Forms/MainForm.cs`：
+创建 `src/KioskWin/Forms/MainForm.cs`：
 
 ```csharp
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
-using PositionKiosk.Core;
+using KioskWin.Core;
 using System.Drawing;
 using System.Windows.Forms;
-using PositionKiosk.Forms;
+using KioskWin.Forms;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public sealed class MainForm : Form
 {
@@ -1502,7 +1502,7 @@ public sealed class MainForm : Form
 - [ ] **Step 2: 构建 + 跑测试（确保未破坏 Core 测试）**
 
 ```bash
-dotnet build PositionKiosk.sln
+dotnet build KioskWin.sln
 dotnet test
 ```
 
@@ -1520,7 +1520,7 @@ git commit -m "feat(forms): add MainForm (fullscreen, lockdown, retry, admin ent
 ## Task 10: Program.cs 最终入口（Forms）
 
 **Files:**
-- Modify: `src/PositionKiosk/Program.cs`（替换 Task 1 的占位）
+- Modify: `src/KioskWin/Program.cs`（替换 Task 1 的占位）
 
 **Interfaces:**
 - Consumes: `KioskConfig.LoadFromFile`、`FileLogger`、`Forms.MainForm`。
@@ -1530,19 +1530,19 @@ git commit -m "feat(forms): add MainForm (fullscreen, lockdown, retry, admin ent
 
 - [ ] **Step 1: 替换 Program.cs 为最终版本**
 
-将 `src/PositionKiosk/Program.cs` 全文替换为：
+将 `src/KioskWin/Program.cs` 全文替换为：
 
 ```csharp
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using PositionKiosk.Core;
-using PositionKiosk.Forms;
+using KioskWin.Core;
+using KioskWin.Forms;
 
-namespace PositionKiosk;
+namespace KioskWin;
 
 internal static class Program
 {
-    private const string MutexName = "Global\\PositionKiosk_SingleInstance";
+    private const string MutexName = "Global\\KioskWin_SingleInstance";
 
     [STAThread]
     private static void Main(string[] args)
@@ -1579,7 +1579,7 @@ internal static class Program
             LogException(ex, "startup");
             MessageBox.Show(
                 "程序启动失败，请查看日志：\n" + ex.Message,
-                "Position Kiosk",
+                "KioskWin",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
@@ -1642,7 +1642,7 @@ internal static class Program
 - [ ] **Step 2: 构建**
 
 ```bash
-dotnet build PositionKiosk.sln
+dotnet build KioskWin.sln
 ```
 
 预期：0 错误。
@@ -1650,7 +1650,7 @@ dotnet build PositionKiosk.sln
 - [ ] **Step 3: 手动验证 CLI 模式**
 
 ```bash
-dotnet run --project src/PositionKiosk/PositionKiosk.csproj -- --hash-password mysecret
+dotnet run --project src/KioskWin/KioskWin.csproj -- --hash-password mysecret
 ```
 
 预期：打印两行 `AdminPasswordHash` / `PasswordSalt`，程序不弹窗、立即退出。
@@ -1667,7 +1667,7 @@ git commit -m "feat: wire Program entry (hash-password CLI, single-instance, exc
 ## Task 11: 开机自启脚本 + 发布 + 手动 QA
 
 **Files:**
-- Create: `src/PositionKiosk/install-shortcut.ps1`
+- Create: `src/KioskWin/install-shortcut.ps1`
 - (运行) 发布产物 + 手动 QA 清单
 
 **Interfaces:**
@@ -1677,37 +1677,37 @@ git commit -m "feat: wire Program entry (hash-password CLI, single-instance, exc
 
 - [ ] **Step 1: 写 install-shortcut.ps1**
 
-创建 `src/PositionKiosk/install-shortcut.ps1`：
+创建 `src/KioskWin/install-shortcut.ps1`：
 
 ```powershell
-# 在当前用户的"启动"文件夹创建 PositionKiosk 开机自启快捷方式
-# 用法：在发布产物目录（含 PositionKiosk.exe）下运行 powershell -ExecutionPolicy Bypass -File .\install-shortcut.ps1
+# 在当前用户的"启动"文件夹创建 KioskWin 开机自启快捷方式
+# 用法：在发布产物目录（含 KioskWin.exe）下运行 powershell -ExecutionPolicy Bypass -File .\install-shortcut.ps1
 $ErrorActionPreference = 'Stop'
 
-$exe = Join-Path $PSScriptRoot 'PositionKiosk.exe'
+$exe = Join-Path $PSScriptRoot 'KioskWin.exe'
 if (-not (Test-Path $exe)) {
     throw "未找到 $exe，请在发布产物目录运行此脚本。"
 }
 
 $startup = [Environment]::GetFolderPath('Startup')
-$shortcutPath = Join-Path $startup 'PositionKiosk.lnk'
+$shortcutPath = Join-Path $startup 'KioskWin.lnk'
 
 $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = $exe
 $shortcut.WorkingDirectory = $PSScriptRoot
 $shortcut.WindowStyle = 3   # 最大化
-$shortcut.Description = 'Position Kiosk'
+$shortcut.Description = 'KioskWin'
 $shortcut.Save()
 
 Write-Host "已创建开机自启快捷方式：$shortcutPath"
 ```
 
-> 注意：发布后该脚本应与 `PositionKiosk.exe` 同目录。`dotnet publish` 默认不会把 `.ps1` 复制到输出。下一步用发布参数复制它。
+> 注意：发布后该脚本应与 `KioskWin.exe` 同目录。`dotnet publish` 默认不会把 `.ps1` 复制到输出。下一步用发布参数复制它。
 
 - [ ] **Step 2: 让 csproj 把脚本复制到发布输出**
 
-在 `src/PositionKiosk/PositionKiosk.csproj` 的 `</Project>` 之前插入：
+在 `src/KioskWin/KioskWin.csproj` 的 `</Project>` 之前插入：
 
 ```xml
   <ItemGroup>
@@ -1720,7 +1720,7 @@ Write-Host "已创建开机自启快捷方式：$shortcutPath"
 - [ ] **Step 3: 发布为自包含单文件**
 
 ```bash
-dotnet publish src/PositionKiosk/PositionKiosk.csproj `
+dotnet publish src/KioskWin/KioskWin.csproj `
   -c Release -r win-x64 `
   --self-contained true `
   -p:PublishSingleFile=true `
@@ -1731,23 +1731,23 @@ dotnet publish src/PositionKiosk/PositionKiosk.csproj `
 
 （Linux/macOS shell 去掉反引号换行，写成一行的 `dotnet publish ... -o publish`。）
 
-预期：`publish/` 下生成 `PositionKiosk.exe`（单文件）+ `appsettings.json` + `install-shortcut.ps1`。
+预期：`publish/` 下生成 `KioskWin.exe`（单文件）+ `appsettings.json` + `install-shortcut.ps1`。
 
-> **验证 WebView2 单文件兼容**：把 `publish\` 拷到一台干净的 Win10/11 机器（已装 Edge/WebView2 运行时）双击 `PositionKiosk.exe`，确认能正常初始化 WebView2（出现网页或重试遮罩，而非崩溃）。若单文件模式下 WebView2 无法初始化（`WebView2Loader.dll` 解压问题），退路：去掉 `-p:PublishSingleFile=true` 重新发布（仍 `--self-contained`，多文件目录部署），并相应把 `install-shortcut.ps1` 指向 `PositionKiosk.exe`。
+> **验证 WebView2 单文件兼容**：把 `publish\` 拷到一台干净的 Win10/11 机器（已装 Edge/WebView2 运行时）双击 `KioskWin.exe`，确认能正常初始化 WebView2（出现网页或重试遮罩，而非崩溃）。若单文件模式下 WebView2 无法初始化（`WebView2Loader.dll` 解压问题），退路：去掉 `-p:PublishSingleFile=true` 重新发布（仍 `--self-contained`，多文件目录部署），并相应把 `install-shortcut.ps1` 指向 `KioskWin.exe`。
 
 - [ ] **Step 4: 配置管理员密码（关键，否则无法维护退出）**
 
 在发布目录运行：
 
 ```bash
-./PositionKiosk.exe --hash-password 你的密码
+./KioskWin.exe --hash-password 你的密码
 ```
 
 把输出的两行 `AdminPasswordHash` / `PasswordSalt` 填入 `appsettings.json`，保存。
 
 - [ ] **Step 5: 在真实工控机或 Win10/11 虚拟机过手动 QA 清单**
 
-在 `publish\` 目录双击 `PositionKiosk.exe`（或运行 `install-shortcut.ps1` 后重启），逐项核对：
+在 `publish\` 目录双击 `KioskWin.exe`（或运行 `install-shortcut.ps1` 后重启），逐项核对：
 
 - [ ] 全屏覆盖主屏，无标题栏与最小化/关闭按钮
 - [ ] 按 Alt+F4 无效，窗口不关闭

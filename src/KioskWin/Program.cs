@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using PositionKiosk.Core;
-using PositionKiosk.Forms;
+using KioskWin.Core;
+using KioskWin.Forms;
 
-namespace PositionKiosk;
+namespace KioskWin;
 
 internal static class Program
 {
-    private const string MutexName = "Global\\PositionKiosk_SingleInstance";
+    private const string MutexName = "Global\\KioskWin_SingleInstance";
 
     [STAThread]
     private static void Main(string[] args)
@@ -44,7 +44,7 @@ internal static class Program
             LogException(ex, "startup");
             MessageBox.Show(
                 "程序启动失败，请查看日志：\n" + ex.Message,
-                "Position Kiosk",
+                "KioskWin",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }

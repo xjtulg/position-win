@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed record PasswordHashResult(string Hash, string Salt);
 

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PositionKiosk\PositionKiosk.csproj" />
+    <ProjectReference Include="..\..\src\KioskWin\KioskWin.csproj" />
   </ItemGroup>
 
 </Project>

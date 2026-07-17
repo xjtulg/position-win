@@ -1,8 +1,8 @@
 using System.Drawing;
 using System.Windows.Forms;
-using PositionKiosk.Core;
+using KioskWin.Core;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public enum AdminAction
 {
@@ -32,7 +32,7 @@ public sealed class AdminDialog : Form
         _config = config;
         _logFailure = logFailure;
 
-        Text = "Position Kiosk 管理员";
+        Text = "KioskWin 管理员";
         FormBorderStyle = FormBorderStyle.FixedDialog;
         StartPosition = FormStartPosition.CenterParent;
         MaximizeBox = false;
@@ -112,13 +112,13 @@ public sealed class AdminDialog : Form
             SetActionButtonsEnabled(true);
             _passwordBox.Enabled = false;
             _verifyButton.Enabled = false;
-            _ = MessageBox.Show(this, "验证通过，请选择操作。", "Position Kiosk",
+            _ = MessageBox.Show(this, "验证通过，请选择操作。", "KioskWin",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         else
         {
             _logFailure("admin auth failed");
-            MessageBox.Show(this, "密码错误", "Position Kiosk",
+            MessageBox.Show(this, "密码错误", "KioskWin",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             _passwordBox.Clear();
         }

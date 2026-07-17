@@ -1,14 +1,14 @@
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class FileLoggerTests
 {
     [Fact]
     public void Log_creates_dated_file_and_writes_message()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "PositionKioskTest_" + Guid.NewGuid().ToString("N"));
+        var dir = Path.Combine(Path.GetTempPath(), "KioskWinTest_" + Guid.NewGuid().ToString("N"));
         var logger = new FileLogger(dir);
 
         logger.Log("hello world");
@@ -22,7 +22,7 @@ public class FileLoggerTests
     [Fact]
     public void Log_appends_multiple_lines_to_same_file()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "PositionKioskTest_" + Guid.NewGuid().ToString("N"));
+        var dir = Path.Combine(Path.GetTempPath(), "KioskWinTest_" + Guid.NewGuid().ToString("N"));
         var logger = new FileLogger(dir);
 
         logger.Log("line one");

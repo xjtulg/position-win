@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class KioskConfig
 {

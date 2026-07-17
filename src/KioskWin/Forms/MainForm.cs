@@ -1,11 +1,11 @@
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
-using PositionKiosk.Core;
+using KioskWin.Core;
 using System.Drawing;
 using System.Windows.Forms;
-using PositionKiosk.Forms;
+using KioskWin.Forms;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public sealed class MainForm : Form
 {

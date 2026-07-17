@@ -1,6 +1,6 @@
-# Position Kiosk
+# KioskWin
 
-Position Kiosk is a Windows kiosk shell for opening a configured web page in a full-screen WebView2 window. It is intended for locked-down display stations where the app should start automatically, stay in front, retry failed page loads, and expose a password-protected maintenance dialog.
+KioskWin is a Windows kiosk shell for opening a configured web page in a full-screen WebView2 window. It is intended for locked-down display stations where the app should start automatically, stay in front, retry failed page loads, and expose a password-protected maintenance dialog.
 
 ## Features
 
@@ -19,7 +19,7 @@ Position Kiosk is a Windows kiosk shell for opening a configured web page in a f
 
 ## Configuration
 
-Runtime settings are read from `appsettings.json` beside `PositionKiosk.exe`.
+Runtime settings are read from `appsettings.json` beside `KioskWin.exe`.
 
 ```json
 {
@@ -36,7 +36,7 @@ Runtime settings are read from `appsettings.json` beside `PositionKiosk.exe`.
 Generate admin password values with:
 
 ```powershell
-.\PositionKiosk.exe --hash-password <password>
+.\KioskWin.exe --hash-password <password>
 ```
 
 Copy the generated `AdminPasswordHash` and `PasswordSalt` values into `appsettings.json`. If they are empty, the admin dialog can open but password verification will not pass.
@@ -46,9 +46,9 @@ Copy the generated `AdminPasswordHash` and `PasswordSalt` values into `appsettin
 Restore, build, and test from the repository root:
 
 ```powershell
-dotnet restore PositionKiosk.sln
-dotnet build PositionKiosk.sln -c Release
-dotnet test PositionKiosk.sln -c Release --no-restore --nologo
+dotnet restore KioskWin.sln
+dotnet build KioskWin.sln -c Release
+dotnet test KioskWin.sln -c Release --no-restore --nologo
 ```
 
 Create a self-contained `win-x64` publish directory and zip archive:
@@ -61,7 +61,7 @@ Use `build.bat notest` to skip tests during packaging.
 
 ## Deployment
 
-After packaging, copy `publish\` or `PositionKiosk-win-x64.zip` to the target machine, edit `appsettings.json`, then run:
+After packaging, copy `publish\` or `KioskWin-win-x64.zip` to the target machine, edit `appsettings.json`, then run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install-shortcut.ps1
@@ -75,8 +75,8 @@ powershell -ExecutionPolicy Bypass -File .\uninstall-shortcut.ps1
 
 ## Project Layout
 
-- `src/PositionKiosk/`: application code.
-- `src/PositionKiosk/Core/`: config, parsing, logging, retry, hashing, and helper logic.
-- `src/PositionKiosk/Forms/`: Windows Forms UI.
-- `tests/PositionKiosk.Tests/`: xUnit tests.
+- `src/KioskWin/`: application code.
+- `src/KioskWin/Core/`: config, parsing, logging, retry, hashing, and helper logic.
+- `src/KioskWin/Forms/`: Windows Forms UI.
+- `tests/KioskWin.Tests/`: xUnit tests.
 - `build.bat`: restore, test, publish, and zip script.

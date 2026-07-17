@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace PositionKiosk.Core;
+namespace KioskWin.Core;
 
 public sealed class FormsRetryScheduler : IRetryScheduler
 {

@@ -1,7 +1,7 @@
-using PositionKiosk.Core;
+using KioskWin.Core;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class PasswordHasherTests
 {

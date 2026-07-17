@@ -1,7 +1,7 @@
 using System.Xml.Linq;
 using Xunit;
 
-namespace PositionKiosk.Tests;
+namespace KioskWin.Tests;
 
 public class PackagingScriptsTests
 {
@@ -9,7 +9,7 @@ public class PackagingScriptsTests
     public void Startup_shortcut_scripts_are_copied_to_publish_output()
     {
         var root = FindRepositoryRoot();
-        var projectPath = Path.Combine(root, "src", "PositionKiosk", "PositionKiosk.csproj");
+        var projectPath = Path.Combine(root, "src", "KioskWin", "KioskWin.csproj");
         var projectDirectory = Path.GetDirectoryName(projectPath)!;
         var document = XDocument.Load(projectPath);
 
@@ -35,7 +35,7 @@ public class PackagingScriptsTests
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory != null)
         {
-            if (File.Exists(Path.Combine(directory.FullName, "PositionKiosk.sln")))
+            if (File.Exists(Path.Combine(directory.FullName, "KioskWin.sln")))
                 return directory.FullName;
 
             directory = directory.Parent;

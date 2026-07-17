@@ -1,4 +1,4 @@
-# Position Kiosk — WebView2 全屏锁定程序设计规格
+# KioskWin — WebView2 全屏锁定程序设计规格
 
 - **日期**：2026-07-16
 - **状态**：已批准（待实现规划）
@@ -58,9 +58,9 @@
 
 ```
 position-win/
-├── PositionKiosk.sln
-├── src/PositionKiosk/
-│   ├── PositionKiosk.csproj          # WinForms; net8.0-windows; 自包含单文件发布
+├── KioskWin.sln
+├── src/KioskWin/
+│   ├── KioskWin.csproj          # WinForms; net8.0-windows; 自包含单文件发布
 │   ├── Program.cs                    # 入口：DPI、单实例互斥锁、异常兜底、日志初始化
 │   ├── Forms/
 │   │   ├── MainForm.cs(.Designer)    # 无边框全屏窗口，宿主 WebView2
@@ -70,10 +70,10 @@ position-win/
 │   │   ├── KioskConfig.cs            # 配置 POCO + 加载/校验/热重载
 │   │   ├── PasswordHasher.cs         # SHA-256(salt + pwd)，纯函数可测
 │   │   ├── RetryController.cs        # 重试状态机，纯逻辑可测
-│   │   └── FileLogger.cs             # 写 %LocalAppData%\PositionKiosk\logs\
+│   │   └── FileLogger.cs             # 写 %LocalAppData%\KioskWin\logs\
 │   ├── appsettings.json              # 配置文件（随 exe 同目录）
 │   └── install-shortcut.ps1          # 一键创建开机自启快捷方式
-├── tests/PositionKiosk.Tests/        # xUnit，覆盖 Core 层纯逻辑
+├── tests/KioskWin.Tests/        # xUnit，覆盖 Core 层纯逻辑
 └── docs/superpowers/specs/…
 ```
 
@@ -181,7 +181,7 @@ position-win/
 程序内置隐藏 CLI 模式：
 
 ```
-PositionKiosk.exe --hash-password <密码>
+KioskWin.exe --hash-password <密码>
 ```
 
 打印生成的 `AdminPasswordHash` 与随机 `PasswordSalt`，填入 `appsettings.json`。
@@ -192,7 +192,7 @@ PositionKiosk.exe --hash-password <密码>
 ### 发布命令
 
 ```
-dotnet publish src/PositionKiosk/PositionKiosk.csproj \
+dotnet publish src/KioskWin/KioskWin.csproj \
   -c Release -r win-x64 \
   --self-contained true \
   -p:PublishSingleFile=true \
@@ -208,13 +208,13 @@ dotnet publish src/PositionKiosk/PositionKiosk.csproj \
 
 ### 部署
 
-- 拷贝发布产物到 `C:\PositionKiosk\`。
+- 拷贝发布产物到 `C:\KioskWin\`。
 - `appsettings.json` 与 exe 同目录，可直接改 URL 无需重新编译。
 
 ### 开机自启（免管理员权限）
 
 - `install-shortcut.ps1` 在当前用户的「启动」文件夹创建快捷方式：
-  `%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\PositionKiosk.lnk`
+  `%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\KioskWin.lnk`
 - 启动文件夹方案可见、易管理、无需提权。
 - **可选增强**：随包附带 Evergreen 引导器 `MicrosoftEdgeWebview2Setup.exe`；
   程序首次运行若 `EnsureCoreWebView2Async` 抛"未安装运行时"异常，则静默执行引导器安装后重试。
@@ -226,18 +226,18 @@ dotnet publish src/PositionKiosk/PositionKiosk.csproj \
 | 未检测到 WebView2 运行时 | catch `EnsureCoreWebView2Async` 异常 → 全屏提示遮罩；可选自动跑引导器 |
 | 渲染进程崩溃 | `CoreWebView2ProcessFailed` → 重新初始化 / 重载 |
 | 未捕获异常 | `AppDomain.UnhandledException` + `Application.ThreadException` → 写日志 + 显示通用错误遮罩，不静默退出 |
-| 第二实例 | 命名 `Mutex`（`Global\PositionKiosk_SingleInstance`）→ 激活已有窗口到前台后退出新进程 |
+| 第二实例 | 命名 `Mutex`（`Global\KioskWin_SingleInstance`）→ 激活已有窗口到前台后退出新进程 |
 | 配置缺失/非法 | 安全默认值 + 日志告警 |
 
 ### 日志
 
-- 路径：`%LocalAppData%\PositionKiosk\logs\yyyy-MM-dd.log`
+- 路径：`%LocalAppData%\KioskWin\logs\yyyy-MM-dd.log`
 - 内容：启动、URL、导航结果（成功/失败）、重试事件、异常堆栈、管理员操作（鉴权成功/失败、执行的工具）。
 - 实现：轻量 `FileLogger`（追加写、按天分文件），不引入重依赖。
 
 ## 11. 测试策略
 
-### 单元测试（xUnit，`tests/PositionKiosk.Tests/`）
+### 单元测试（xUnit，`tests/KioskWin.Tests/`）
 
 - `KioskConfig`：合法 JSON 解析、各字段校验、缺失/非法字段回退默认值、热重载。
 - `PasswordHasher`：正确密码通过、错误密码失败、不同 salt 产生不同 hash、常数时间比较。

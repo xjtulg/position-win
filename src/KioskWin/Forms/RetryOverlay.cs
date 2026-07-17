@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace PositionKiosk.Forms;
+namespace KioskWin.Forms;
 
 public sealed class RetryOverlay : UserControl
 {
